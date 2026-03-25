@@ -1,0 +1,38 @@
+@import "tailwindcss";
+
+@theme {
+  --color-bio-bg: #050505;
+  --color-bio-primary: #8a2be2; /* Neon purple */
+  --color-bio-accent: #00E5FF; /* Cyan */
+  --font-sans: 'Inter', sans-serif;
+  --font-mono: 'Fira Code', monospace;
+}
+
+:root {
+  background-color: var(--color-bio-bg);
+  color: white;
+  font-family: var(--font-sans);
+}
+
+body {
+  margin: 0;
+  overflow: hidden; /* Canvas takes over completely */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.glass-panel {
+  background: rgba(15, 15, 20, 0.4);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+  border-radius: 1.5rem;
+}
+
+.glass-pill {
+  background: rgba(15, 15, 20, 0.6);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 9999px;
+}
