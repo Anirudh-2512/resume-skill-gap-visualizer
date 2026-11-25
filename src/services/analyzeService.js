@@ -10,7 +10,7 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
 ).toString()
 
 // ── API Key from .env file ──
-const GROQ_API_KEY = import.meta.env.VITE_GROQ_API_KEY || ''
+const GROQ_API_KEY = import.meta.env.VITE_GROQ_API_KEY
 
 const ANALYSIS_PROMPT_TEMPLATE = `You are an expert AI system for skill intelligence and career analysis.
 
@@ -37,7 +37,7 @@ TASK:
 4. Assign importance level to each missing skill: "high" | "medium" | "low"
 5. Identify dependencies between skills (e.g. Machine Learning requires Python, Pandas)
 6. Generate a learning path ordered from beginner to advanced
-7. Provide a short reasoning summary
+7. Provide a short reasoning summary — MUST be a non-empty string of 2-4 sentences
 
 OUTPUT FORMAT (STRICT JSON, NO MARKDOWN, NO CODE BLOCKS):
 {
@@ -169,7 +169,7 @@ export async function analyzeSkills(resumeInput, jdText) {
       'Authorization': `Bearer ${GROQ_API_KEY}`
     },
     body: JSON.stringify({
-      model: 'llama-3.3-70b-versatile',
+      model: 'openai/gpt-oss-120b',
       messages: [
         {
           role: 'system',
@@ -198,6 +198,11 @@ export async function analyzeSkills(resumeInput, jdText) {
 
   const jsonText = cleanJSON(rawText)
   const analysis = JSON.parse(jsonText)
+
+  // Normalize summary — guarantee the AI Insight panel always has text to show
+  if (!analysis || typeof analysis !== 'object' || typeof analysis.summary !== 'string' || !analysis.summary.trim()) {
+    analysis.summary = `${(analysis.matching_skills?.length ?? 0)} skills match your resume, ${(analysis.missing_skills?.length ?? 0)} skill gaps found.`
+  }
 
   // Normalize match_score — convert decimal to percentage if needed
   if (analysis.match_score <= 1) {

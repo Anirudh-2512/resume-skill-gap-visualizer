@@ -115,15 +115,39 @@ export default function AnalyzePanel() {
         </div>
 
         {/* AI Insight */}
-        <div className="glass-panel p-7 border border-[#7B61FF]/40 bg-[#7B61FF]/5 relative overflow-hidden group shadow-[0_0_20px_rgba(123,97,255,0.1)] mt-auto">
+        <div className="glass-panel p-7 border border-[#7B61FF]/60 bg-[#7B61FF]/8 relative overflow-hidden group shadow-[0_0_35px_rgba(123,97,255,0.3)] mt-auto flex flex-col gap-3">
           <div className="absolute top-0 right-0 w-36 h-36 bg-[#7B61FF]/10 blur-[50px] rounded-full group-hover:bg-[#7B61FF]/20 transition-all duration-700"></div>
           <div className="flex items-center gap-3 mb-3">
             <Sparkles className="w-5 h-5 text-[#7B61FF]" />
             <span className="font-sans font-bold text-lg text-white">AI Insight</span>
           </div>
           <p className="text-sm font-sans text-white/70 leading-relaxed italic border-l-2 border-[#7B61FF]/50 pl-4 py-1">
-            "{analysis?.summary ?? 'Run an analysis to generate an intelligent summary.'}"
+            "{analysis?.summary?.trim() || 'Run an analysis to generate an intelligent summary.'}"
           </p>
+          {(analysis?.missing_skills?.length ?? 0) > 0 && (
+            <div>
+              <p className="text-xs font-mono uppercase tracking-widest text-[#E63B2E] mb-2 flex items-center gap-2">
+                <ShieldAlert className="w-3.5 h-3.5" /> Key Gaps — {analysis.missing_skills.length} skill{analysis.missing_skills.length > 1 ? 's' : ''}
+              </p>
+              <div className="flex flex-wrap gap-2 max-h-24 overflow-y-auto">
+                {analysis.missing_skills.map((m, i) => (
+                  <span
+                    key={i}
+                    className={`text-xs font-sans px-3 py-1.5 rounded-lg border flex items-center gap-2 ${
+                      m.priority === 'high'
+                        ? 'text-[#E63B2E] border-[#E63B2E]/40 bg-[#E63B2E]/10'
+                        : m.priority === 'medium'
+                          ? 'text-yellow-400 border-yellow-600/40 bg-yellow-600/10'
+                          : 'text-white/60 border-white/10 bg-black/40'
+                    }`}
+                  >
+                    <span className="font-bold">{m.name}</span>
+                    {m.priority && m.priority !== 'low' && <span className="text-[9px] uppercase">· {m.priority}</span>}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       </motion.div>
 
